@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "o5QVq9iJjari8lpV8Nds1H//lvT3EoK9c6EvXIOlM3sDjOCjb384RId8Rri1lMxGzSBVuGZGnpg3Rft7zM9Kdg==",
+  "success": true,
+  "projectFilePath": "/Users/gustavo/Dev/Challenges/coding-challenges/picpay/PicPay.API/PicPay.API.csproj",
+  "expectedPackageFiles": [
+    "/Users/gustavo/.nuget/packages/microsoft.aspnetcore.openapi/8.0.0/microsoft.aspnetcore.openapi.8.0.0.nupkg.sha512",
+    "/Users/gustavo/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "/Users/gustavo/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",
+    "/Users/gustavo/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
+    "/Users/gustavo/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
+    "/Users/gustavo/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.4.0/swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
+    "/Users/gustavo/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.4.0/swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512"
+  ],
+  "logs": []
+}
