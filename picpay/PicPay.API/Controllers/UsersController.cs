@@ -57,7 +57,9 @@ public class UsersController : ControllerBase
             Password = model.Password
         };
 
-        Wallet wallet = new();
+        int randomBalance = new Random().Next(0, 99999);
+
+        Wallet wallet = new() { Balance = Convert.ToDecimal(randomBalance) };
         user.Wallet = wallet;
         
         _context.Users.Add(user);

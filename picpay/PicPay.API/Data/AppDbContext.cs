@@ -7,6 +7,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Wallet> Wallets => Set<Wallet>();
+    public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<Entry> Entries => Set<Entry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -16,5 +18,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasOne<Wallet>(u => u.Wallet)
             .WithOne(w => w.User)
             .HasForeignKey<Wallet>(w => w.UserId);
+        
+        // modelBuilder.Entity<Entry>()
+        //     .HasOne<Wallet>(e => e.Wallet)
+        //     .WithOne(w => w.User)
+        //     .HasForeignKey<Wallet>(w => w.UserId);
+        
+        // modelBuilder.Entity<Entry>()
+        //     .HasOne<Transaction>(e => e.Transaction)
+        //     .WithMany(w => w.User)
+        //     .HasForeignKey<Wallet>(w => w.UserId);
+
+        modelBuilder.Entity<Transaction>()
+            .HasMany(t => t.Entries)
+            .WithOne(e => e.Transaction)
+            .HasForeignKey(e => e.TransactionId)
+            .IsRequired();
     }
 }
