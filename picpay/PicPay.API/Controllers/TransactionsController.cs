@@ -17,12 +17,15 @@ public class TransactionsController : ControllerBase
         _context = context;
     }
 
-    [HttpGet]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public void GetTransactionById(Guid id)
+    public async Task<ActionResult<Transaction>> GetTransactionById(Guid id)
     {
-        
+        var transaction = await _context.Transactions
+            .Include(t => t.Entries)
+            .FirstOrDefaultAsync(t => t.Id == id);
+        return transaction == null ? NotFound() : Ok(transaction);
     }
 
     [HttpPost]
