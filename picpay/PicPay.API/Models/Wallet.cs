@@ -10,4 +10,10 @@ public class Wallet
     
     [JsonIgnore]
     public virtual User User { get; set; } = null!;
+
+    [JsonIgnore] 
+    public List<Transaction> Transactions { get; set; } = new();
+
+    [JsonIgnore] 
+    public List<Entry> Entries { get; set; } = new();
 }

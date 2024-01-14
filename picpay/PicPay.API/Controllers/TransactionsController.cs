@@ -18,12 +18,17 @@ public class TransactionsController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public void GetTransactionById(Guid id)
     {
         
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> CreateTransaction(CreateTransactionRequestModel request)
     {
         if (!ModelState.IsValid)
@@ -54,7 +59,7 @@ public class TransactionsController : ControllerBase
 
         var transaction = new Transaction()
         {
-            Value = request.Value,
+            Amount = request.Value,
             PayerId = request.PayerId,
             PayeeId = request.PayeeId,
             CreatedAt = DateTime.Now
@@ -62,21 +67,25 @@ public class TransactionsController : ControllerBase
 
         var debitEntry = new Entry()
         {
-            Value = -request.Value,
+            Amount = -request.Value,
             CreatedAt = DateTime.Now
         };
         
         var creditEntry = new Entry()
         {
-            Value = request.Value,
+            Amount = request.Value,
             CreatedAt = DateTime.Now
         };
         
         transaction.Entries.Add(debitEntry);
         transaction.Entries.Add(creditEntry);
 
-        payer.Wallet.Balance -= request.Value;
-        payee.Wallet.Balance += request.Value;
+        payer.Wallet.Transactions.Add(transaction);
+        payer.Wallet.Entries.Add(debitEntry);
+        payer.Wallet.Balance += debitEntry.Amount;
+        payee.Wallet.Transactions.Add(transaction);
+        payee.Wallet.Entries.Add(creditEntry);
+        payee.Wallet.Balance += creditEntry.Amount;
 
         _context.Transactions.Add(transaction);
         await _context.SaveChangesAsync();

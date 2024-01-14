@@ -42,6 +42,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult> CreateUser(CreateUserRequestModel model)
     {
         if (!ModelState.IsValid)
