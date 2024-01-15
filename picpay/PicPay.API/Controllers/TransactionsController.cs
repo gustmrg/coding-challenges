@@ -4,8 +4,10 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
+using PicPay.API.Exceptions;
 using PicPay.API.Models;
 using PicPay.API.Models.RequestModels;
+using PicPay.API.Models.ResponseModels;
 using RestSharp;
 
 namespace PicPay.API.Controllers;
@@ -38,81 +40,93 @@ public class TransactionsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> CreateTransaction(CreateTransactionRequestModel request)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return UnprocessableEntity();
+            if (!ModelState.IsValid)
+            {
+                return UnprocessableEntity();
+            }
+
+            if (request.Value <= 0)
+            {
+                throw new TransactionInvalidValueException("EX001 - Transaction amount must be value greater than zero");
+            }
+
+            var payer = await _context.Users.Include(u => u.Wallet)
+                .FirstOrDefaultAsync(u => u.Id == request.PayerId);
+            
+            if (payer == null)
+            {
+                throw new UserNotFoundException("EX004 - User not found");
+            }
+
+            if (payer.Wallet.Balance < request.Value)
+            {
+                throw new WalletBalanceException("EX002 - Balance is not enough to complete the transaction");
+            }
+            
+            var payee = await _context.Users.Include(u => u.Wallet)
+                .FirstOrDefaultAsync(u => u.Id == request.PayeeId);
+            
+            if (payee == null)
+            {
+                throw new UserNotFoundException("EX004 - User not found");
+            }
+
+            var transaction = new Transaction
+            {
+                Amount = request.Value,
+                PayerId = request.PayerId,
+                PayeeId = request.PayeeId,
+                CreatedAt = DateTime.Now
+            };
+
+            var debitEntry = new Entry
+            {
+                Amount = -request.Value,
+                CreatedAt = DateTime.Now
+            };
+            
+            var creditEntry = new Entry
+            {
+                Amount = request.Value,
+                CreatedAt = DateTime.Now
+            };
+            
+            transaction.Entries.Add(debitEntry);
+            transaction.Entries.Add(creditEntry);
+
+            payer.Wallet.Transactions.Add(transaction);
+            payer.Wallet.Entries.Add(debitEntry);
+            payer.Wallet.Balance += debitEntry.Amount;
+            payee.Wallet.Transactions.Add(transaction);
+            payee.Wallet.Entries.Add(creditEntry);
+            payee.Wallet.Balance += creditEntry.Amount;
+            
+            var authorizationResponse = await GetTransactionAuthorization();
+
+            if (authorizationResponse.StatusCode != HttpStatusCode.OK)
+            {
+                throw new TransactionUnauthorizedException("EX003 - Transaction was not authorized");
+            }
+            
+            var response = JsonSerializer.Deserialize<TransactionAuthorizationResponse>(authorizationResponse.Content);
+
+            if (response?.Message is null || !response.Message.Equals("Autorizado"))
+            {
+                throw new TransactionUnauthorizedException("EX003 - Transaction was not authorized");
+            }
+            
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+            await SendTransactionNotification();
+            
+            return CreatedAtAction(nameof(GetTransactionById), new { id = transaction.Id }, transaction);
         }
-
-        if (request.Value <= 0)
+        catch (Exception e)
         {
-            return BadRequest();
+            return BadRequest(new ErrorResponse { Message = e.Message });
         }
-
-        var payer = await _context.Users.Include(u => u.Wallet)
-            .FirstOrDefaultAsync(u => u.Id == request.PayerId);
-        
-        if (payer == null || payer.Wallet.Balance < request.Value)
-        {
-            return BadRequest();
-        }
-        
-        var payee = await _context.Users.Include(u => u.Wallet)
-            .FirstOrDefaultAsync(u => u.Id == request.PayeeId);
-        
-        if (payee == null)
-        {
-            return BadRequest();
-        }
-
-        var transaction = new Transaction()
-        {
-            Amount = request.Value,
-            PayerId = request.PayerId,
-            PayeeId = request.PayeeId,
-            CreatedAt = DateTime.Now
-        };
-
-        var debitEntry = new Entry()
-        {
-            Amount = -request.Value,
-            CreatedAt = DateTime.Now
-        };
-        
-        var creditEntry = new Entry()
-        {
-            Amount = request.Value,
-            CreatedAt = DateTime.Now
-        };
-        
-        transaction.Entries.Add(debitEntry);
-        transaction.Entries.Add(creditEntry);
-
-        payer.Wallet.Transactions.Add(transaction);
-        payer.Wallet.Entries.Add(debitEntry);
-        payer.Wallet.Balance += debitEntry.Amount;
-        payee.Wallet.Transactions.Add(transaction);
-        payee.Wallet.Entries.Add(creditEntry);
-        payee.Wallet.Balance += creditEntry.Amount;
-        
-        var authorizationResponse = await GetTransactionAuthorization();
-
-        if (authorizationResponse.StatusCode != HttpStatusCode.OK)
-        {
-            return BadRequest();
-        }
-        
-        var response = JsonSerializer.Deserialize<TransactionAuthorizationResponse>(authorizationResponse.Content);
-
-        if (response?.Message is null || !response.Message.Equals("Autorizado"))
-        {
-            return BadRequest();
-        }
-        
-        _context.Transactions.Add(transaction);
-        await _context.SaveChangesAsync();
-        await SendTransactionNotification();
-        
-        return CreatedAtAction(nameof(GetTransactionById), new { id = transaction.Id }, transaction);
     }
 
     private async Task<RestResponse> GetTransactionAuthorization()

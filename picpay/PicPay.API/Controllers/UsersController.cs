@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
@@ -13,6 +12,7 @@ namespace PicPay.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private const decimal INITIAL_BALANCE = 10_000M;
 
     public UsersController(AppDbContext context)
     {
@@ -45,37 +45,42 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult> CreateUser(CreateUserRequestModel model)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return UnprocessableEntity();
-        }
+            if (!ModelState.IsValid)
+            {
+                return UnprocessableEntity();
+            }
 
-        User user = new()
-        {
-            FullName = model.FullName,
-            DocumentNumber = model.DocumentNumber,
-            Email = model.Email,
-            Password = model.Password
-        };
+            var user = new User
+            {
+                FullName = model.FullName,
+                DocumentNumber = model.DocumentNumber,
+                Email = model.Email,
+                Password = model.Password
+            };
 
-        int randomBalance = new Random().Next(0, 99999);
-
-        Wallet wallet = new() { Balance = Convert.ToDecimal(randomBalance) };
-        user.Wallet = wallet;
+            var wallet = new Wallet { Balance = INITIAL_BALANCE };
+            user.Wallet = wallet;
         
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
 
-        CreateUserResponseModel response = new CreateUserResponseModel()
+            var response = new CreateUserResponseModel
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                DocumentNumber = user.DocumentNumber,
+                Email = user.Email,
+                IsSeller = user.IsSeller,
+                Wallet = user.Wallet
+            };
+
+            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, response);
+        }
+        catch (Exception e)
         {
-            Id = user.Id,
-            FullName = user.FullName,
-            DocumentNumber = user.DocumentNumber,
-            Email = user.Email,
-            IsSeller = user.IsSeller,
-            Wallet = user.Wallet
-        };
-
-        return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, response);
+            return BadRequest(new ErrorResponse { Message = e.Message });
+        }
     }
 }
