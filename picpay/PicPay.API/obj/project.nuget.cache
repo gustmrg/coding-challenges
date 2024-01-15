@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1C+E/ggCnNLKGCMYB6x1Tnmn7AxEu7goY7TKoHzgLlKP1hSHNJVEmhEg5uvh3w8M6pruA7K5B2LhZAaeNJTs3Q==",
+  "dgSpecHash": "/CWyjxl5WX/ssStYd1L1PExTaeUMryApV+BWDUlcOjutoPITbdWJE+NsSeWwVp3aO4aJoZptYBWJQvHC9sTgPA==",
   "success": true,
   "projectFilePath": "/Users/gustavo/Dev/Challenges/coding-challenges/picpay/PicPay.API/PicPay.API.csproj",
   "expectedPackageFiles": [
@@ -33,6 +33,7 @@
     "/Users/gustavo/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
     "/Users/gustavo/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",
     "/Users/gustavo/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",
+    "/Users/gustavo/.nuget/packages/restsharp/110.2.0/restsharp.110.2.0.nupkg.sha512",
     "/Users/gustavo/.nuget/packages/sqlitepclraw.bundle_e_sqlite3/2.1.6/sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg.sha512",
     "/Users/gustavo/.nuget/packages/sqlitepclraw.core/2.1.6/sqlitepclraw.core.2.1.6.nupkg.sha512",
     "/Users/gustavo/.nuget/packages/sqlitepclraw.lib.e_sqlite3/2.1.6/sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg.sha512",

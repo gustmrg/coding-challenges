@@ -1,8 +1,12 @@
+using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
 using PicPay.API.Models;
 using PicPay.API.Models.RequestModels;
+using RestSharp;
 
 namespace PicPay.API.Controllers;
 
@@ -47,7 +51,7 @@ public class TransactionsController : ControllerBase
         var payer = await _context.Users.Include(u => u.Wallet)
             .FirstOrDefaultAsync(u => u.Id == request.PayerId);
         
-        if (payer == null)
+        if (payer == null || payer.Wallet.Balance < request.Value)
         {
             return BadRequest();
         }
@@ -89,10 +93,54 @@ public class TransactionsController : ControllerBase
         payee.Wallet.Transactions.Add(transaction);
         payee.Wallet.Entries.Add(creditEntry);
         payee.Wallet.Balance += creditEntry.Amount;
+        
+        var authorizationResponse = await GetTransactionAuthorization();
 
+        if (authorizationResponse.StatusCode != HttpStatusCode.OK)
+        {
+            return BadRequest();
+        }
+        
+        var response = JsonSerializer.Deserialize<TransactionAuthorizationResponse>(authorizationResponse.Content);
+
+        if (response?.Message is null || !response.Message.Equals("Autorizado"))
+        {
+            return BadRequest();
+        }
+        
         _context.Transactions.Add(transaction);
         await _context.SaveChangesAsync();
+        await SendTransactionNotification();
         
         return CreatedAtAction(nameof(GetTransactionById), new { id = transaction.Id }, transaction);
+    }
+
+    private async Task<RestResponse> GetTransactionAuthorization()
+    {
+        var client = new RestClient("https://run.mocky.io/v3/");
+        var request = new RestRequest("5794d450-d2e2-4412-8131-73d0293ac1cc");
+        var response = await client.ExecuteGetAsync(request);
+        return response;
+    }
+    
+    private async Task SendTransactionNotification()
+    {
+        var client = new RestClient("https://run.mocky.io/v3/");
+        var request = new RestRequest("54dc2cf1-3add-45b5-b5a9-6bf7e7f1f4a6", Method.Post);
+        request.AddJsonBody(new { IsCompleted = true });
+        var response = await client.ExecutePostAsync<TransactionNotificationResponse>(request);
+        Console.WriteLine(response.Data is { Message: true });
+    }
+
+    private record TransactionAuthorizationResponse
+    {
+        [JsonPropertyName("message")]
+        public string Message { get; init; } = string.Empty;
+    }
+
+    private record TransactionNotificationResponse
+    {
+        [JsonPropertyName("message")]
+        public bool Message { get; init; }
     }
 }

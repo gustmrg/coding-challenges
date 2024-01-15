@@ -1,9 +1,12 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
+using RestSharp;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddSingleton(new RestClient(new HttpClient()));
 
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite(connectionString));
 
