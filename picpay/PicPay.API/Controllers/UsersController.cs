@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
@@ -12,11 +13,13 @@ namespace PicPay.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IValidator<CreateUserRequestModel> _validator;
     private const decimal INITIAL_BALANCE = 10_000M;
 
-    public UsersController(AppDbContext context)
+    public UsersController(AppDbContext context, IValidator<CreateUserRequestModel> validator)
     {
         _context = context;
+        _validator = validator;
     }
     
     [HttpGet]
@@ -43,21 +46,22 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult> CreateUser(CreateUserRequestModel model)
+    public async Task<ActionResult> CreateUser(CreateUserRequestModel request)
     {
         try
         {
-            if (!ModelState.IsValid)
+            var result = _validator.ValidateAsync(request);
+            if (!result.Result.IsValid)
             {
                 return UnprocessableEntity();
             }
 
             var user = new User
             {
-                FullName = model.FullName,
-                DocumentNumber = model.DocumentNumber,
-                Email = model.Email,
-                Password = model.Password
+                FullName = request.FullName,
+                DocumentNumber = request.DocumentNumber,
+                Email = request.Email,
+                Password = request.Password
             };
 
             var wallet = new Wallet { Balance = INITIAL_BALANCE };
