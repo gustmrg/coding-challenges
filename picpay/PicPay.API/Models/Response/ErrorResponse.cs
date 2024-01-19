@@ -1,4 +1,4 @@
-namespace PicPay.API.Models.ResponseModels;
+namespace PicPay.API.Models.Response;
 
 public class ErrorResponse
 {

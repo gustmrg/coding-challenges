@@ -1,4 +1,4 @@
-namespace PicPay.API.Models;
+namespace PicPay.API.Entities;
 
 public class WalletTransaction
 {

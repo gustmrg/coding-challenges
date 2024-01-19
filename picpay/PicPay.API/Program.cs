@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
-using PicPay.API.Models.RequestModels;
+using PicPay.API.Models.Request;
 using PicPay.API.Validators;
 using RestSharp;
 

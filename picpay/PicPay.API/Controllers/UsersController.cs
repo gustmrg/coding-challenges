@@ -2,9 +2,9 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
-using PicPay.API.Models;
-using PicPay.API.Models.RequestModels;
-using PicPay.API.Models.ResponseModels;
+using PicPay.API.Entities;
+using PicPay.API.Models.Request;
+using PicPay.API.Models.Response;
 
 namespace PicPay.API.Controllers;
 
@@ -34,7 +34,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<User>> GetUserById(int id)
+    public async Task<ActionResult<User>> GetUserById(Guid id)
     {
         var user = await _context.Users
             .Include(u => u.Wallet)

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace PicPay.API.Models;
+namespace PicPay.API.Entities;
 
 public class Wallet
 {

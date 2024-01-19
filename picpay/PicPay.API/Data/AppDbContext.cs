@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PicPay.API.Models;
+using PicPay.API.Entities;
 
 namespace PicPay.API.Data;
 

@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
 using PicPay.API.Exceptions;
-using PicPay.API.Models;
-using PicPay.API.Models.RequestModels;
-using PicPay.API.Models.ResponseModels;
+using PicPay.API.Entities;
+using PicPay.API.Models.Request;
+using PicPay.API.Models.Response;
 using RestSharp;
 
 namespace PicPay.API.Controllers;

@@ -1,5 +1,5 @@
 using FluentValidation;
-using PicPay.API.Models.RequestModels;
+using PicPay.API.Models.Request;
 
 namespace PicPay.API.Validators;
 

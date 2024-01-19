@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PicPay.API.Models.RequestModels;
+namespace PicPay.API.Models.Request;
 
 public class CreateUserRequestModel
 {
