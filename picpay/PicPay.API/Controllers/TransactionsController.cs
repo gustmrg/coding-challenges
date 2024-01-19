@@ -49,7 +49,7 @@ public class TransactionsController : ControllerBase
 
             if (request.Value <= 0)
             {
-                throw new TransactionInvalidValueException("EX001 - Transaction amount must be value greater than zero");
+                throw new InvalidValueException("Transaction amount must be value greater than zero");
             }
 
             var payer = await _context.Users.Include(u => u.Wallet)
@@ -57,7 +57,7 @@ public class TransactionsController : ControllerBase
             
             if (payer == null)
             {
-                throw new UserNotFoundException("EX004 - User not found");
+                throw new NotFoundException($"User not found with id {request.PayerId}");
             }
 
             if (payer.Wallet.Balance < request.Value)
@@ -70,7 +70,7 @@ public class TransactionsController : ControllerBase
             
             if (payee == null)
             {
-                throw new UserNotFoundException("EX004 - User not found");
+                throw new NotFoundException($"User not found with id {request.PayeeId}");
             }
 
             var transaction = new Transaction
@@ -107,14 +107,14 @@ public class TransactionsController : ControllerBase
 
             if (authorizationResponse.StatusCode != HttpStatusCode.OK)
             {
-                throw new TransactionUnauthorizedException("EX003 - Transaction was not authorized");
+                throw new UnauthorizedException("Transaction has not been authorized");
             }
             
             var response = JsonSerializer.Deserialize<TransactionAuthorizationResponse>(authorizationResponse.Content);
 
             if (response?.Message is null || !response.Message.Equals("Autorizado"))
             {
-                throw new TransactionUnauthorizedException("EX003 - Transaction was not authorized");
+                throw new UnauthorizedException("Transaction has not been authorized");
             }
             
             _context.Transactions.Add(transaction);
