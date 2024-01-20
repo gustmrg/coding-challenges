@@ -35,6 +35,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddScoped<IValidator<CreateUserRequestModel>, CreateUserRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateTransactionRequestModel>, CreateTransactionRequestValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

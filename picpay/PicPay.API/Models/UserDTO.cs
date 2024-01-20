@@ -2,6 +2,13 @@ namespace PicPay.API.Models;
 
 public class UserDTO
 {
+    public UserDTO(Guid id, string fullName, Guid walletId)
+    {
+        Id = id;
+        FullName = fullName;
+        WalletId = walletId;
+    }
+    
     public UserDTO(Guid id, string fullName, string documentNumber, string email, bool isSeller, Guid walletId)
     {
         Id = id;
