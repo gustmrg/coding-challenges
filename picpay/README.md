@@ -1,29 +1,5 @@
 # Desafio Back-end PicPay
 
-Primeiramente, obrigado pelo seu interesse em trabalhar na melhor plataforma de pagamentos do mundo!
-Abaixo você encontrará todos as informações necessárias para iniciar o seu teste.
-
-## Avisos antes de começar
-
--   Crie um repositório no seu GitHub **sem citar nada relacionado ao PicPay**.
--   Faça seus commits no seu repositório.
--   Envie o link do seu repositório para o email **do recrutador responsável**.
--   Você poderá consultar o Google, Stackoverflow ou algum projeto particular na sua máquina.
--   Dê uma olhada nos [Materiais úteis](#materiais-úteis).
--   Dê uma olhada em como será a [entrevista](#para-o-dia-da-entrevista-técnica).
--   Fique à vontade para perguntar qualquer dúvida aos recrutadores.
--   Fique tranquilo, respire, assim como você, também já passamos por essa etapa. Boa sorte! :)
-
-_Corpo do Email com o link do repositório do desafio_
-
-> Seu Nome
->
-> Nome do recrutador
->
-> Link do repositório
->
-> Link do Linkedin
-
 ### Sobre o ambiente da aplicação:
 
 -   Escolha qualquer framework que se sinta **confortável** em trabalhar. Esse teste **não faz** nenhuma preferência, portanto decida por aquele com o qual estará mais seguro em apresentar e conversar com a gente na entrevista ;)
@@ -33,11 +9,6 @@ _Corpo do Email com o link do repositório do desafio_
 -   Ainda assim, se optar por um framework tente evitar usar muito métodos mágicos ou atalhos já prontos. Sabemos que essas facilidades aumentam a produtividade no dia-a-dia mas aqui queremos ver o **seu** código e a sua forma de resolver problemas.
 
 -   Valorizamos uma boa estrutura de containeres criada por você.
-
-## Para o dia da entrevista técnica
-
-Na data marcada pelo recrutador tenha sua aplicação rodando na sua máquina local para execução dos testes e para nos mostrar os pontos desenvolvidos e possíveis questionamentos.
-Faremos um code review junto contigo como se você já fosse do nosso time :heart:, você poderá explicar o que você pensou, como arquitetou e como pode evoluir o projeto.
 
 ## Objetivo: PicPay Simplificado
 
@@ -78,17 +49,6 @@ POST /transaction
 # Avaliação
 
 Apresente sua solução utilizando o framework que você desejar, justificando a escolha.
-Atente-se a cumprir a maioria dos requisitos, pois você pode cumprir-los parcialmente e durante a avaliação vamos bater um papo a respeito do que faltou.
-
-Teremos 2 partes da avaliação:
-
-A correção objetiva será realizada através da utilização de um script de correção automatizada. Você **pode** rodar na sua máquina local ou usar outra ferramenta:
-
-```
-docker run -it --rm -v $(pwd):/project -w /project jakzal/phpqa phpmd app text cleancode,codesize,controversial,design,naming,unusedcode
-```
-
-A correção qualitativa será durante a entrevista e levará em conta os seguintes critérios:
 
 ## O que será avaliado e valorizamos :heart:
 
@@ -123,15 +83,29 @@ Caso não tenha atingido aceitavelmente o que estamos propondo acima, não iremo
 -   Documentação
 -   Proposta de melhoria na arquitetura
 
-## Materiais úteis
+# Solução do Desafio Back-end PicPay
 
--   https://picpay.com/site/sobre-nos
--   https://hub.packtpub.com/why-we-need-design-patterns/
--   https://refactoring.guru/
--   http://br.phptherightway.com/
--   https://www.php-fig.org/psr/psr-12/
--   https://www.atlassian.com/continuous-delivery/software-testing/types-of-software-testing
--   https://github.com/exakat/php-static-analysis-tools
--   https://martinfowler.com/articles/microservices.htm
--   https://docs.guzzlephp.org/en/stable/request-options.html
--   https://www.devmedia.com.br/rest-tutorial/28912
+### 💻  Introdução
+A aplicação "PicPay Simplificado" realiza transferências de dinheiro entre usuários comuns e/ou lojistas. Foi implementada como um serviço RESTful, proporcionando uma experiência simplificada e segura para transações financeiras.
+
+### ⭐️ Funcionalidades do projeto
+* Usuários podem enviar dinheiro (efetuar transferência) outros usuários
+* Autorização de transações através de consultas em API externa
+* Operações tratadas como transações, garantindo atomicidade e consistência
+
+### ⛓ API Endpoints
+| HTTP Verbs | Endpoints | Action |
+| --- | --- | --- |
+| GET | /transactions/:transactionId | Recupera os detalhes de uma transação financeira |
+| POST | /transactions | Cria uma nova transação financeira entre carteiras |
+| GET | /users | Retorna a lista de usuários |
+| POST | /users | Cria um novo usuário |
+| GET | /users/:userId | Retorna os detalhes de um usuário |
+
+### ✨ Tecnologias
+* [.NET](https://dotnet.microsoft.com/): O .NET é uma plataforma gratuita para desenvolvedores, multiplataforma e de software livre, que permite criar vários tipos de aplicativos. O .NET é criado em um runtime de alto desempenho que é usado em produção por muitos aplicativos de alta escala.
+* [Entity Framework Core](https://learn.microsoft.com/pt-br/ef/core/): O EF (Entity Framework) Core é uma versão leve, extensível, de software livre e multiplataforma da popular tecnologia de acesso a dados do Entity Framework.
+* [Sqlite](https://www.sqlite.org/): SQLite é uma biblioteca de linguagem C que implementa um motor de banco de dados SQL pequeno, rápido, independente, de alta confiabilidade e completo.
+
+### 📄 Licença
+Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para mais detalhes.
