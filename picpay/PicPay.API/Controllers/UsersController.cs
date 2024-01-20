@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
 using PicPay.API.Entities;
+using PicPay.API.Models;
 using PicPay.API.Models.Request;
 using PicPay.API.Models.Response;
 
@@ -14,7 +15,7 @@ public class UsersController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IValidator<CreateUserRequestModel> _validator;
-    private const decimal INITIAL_BALANCE = 10_000M;
+    private const decimal InitialBalance = 10_000M;
 
     public UsersController(AppDbContext context, IValidator<CreateUserRequestModel> validator)
     {
@@ -28,7 +29,16 @@ public class UsersController : ControllerBase
     {
         var users = await _context.Users.Include(u => u.Wallet)
             .AsNoTracking().ToListAsync();
-        return Ok(users);
+
+        var response = users.Select(user => new UserDTO(
+            user.Id, 
+            user.FullName, 
+            user.DocumentNumber, 
+            user.Email,
+            user.IsSeller,
+            user.Wallet.Id));
+        
+        return Ok(response);
     }
 
     [HttpGet("{id:guid}")]
@@ -39,21 +49,33 @@ public class UsersController : ControllerBase
         var user = await _context.Users
             .Include(u => u.Wallet)
             .FirstOrDefaultAsync(u => u.Id == id);
-        return user == null ? NotFound() : Ok(user);
+
+        if (user == null) return NotFound();
+        
+        var response = new UserDTO(user.Id, user.FullName, user.DocumentNumber, user.Email, user.IsSeller,
+            user.Wallet.Id);
+        
+        return Ok(response);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult> CreateUser(CreateUserRequestModel request)
+    public async Task<ActionResult> CreateUser([FromBody] CreateUserRequestModel request)
     {
         try
         {
-            var result = _validator.ValidateAsync(request);
-            if (!result.Result.IsValid)
+            var validationResult = _validator.Validate(request);
+            if (!validationResult.IsValid)
             {
-                return UnprocessableEntity();
+                var errors = validationResult.Errors.Select(e => new Error(e.ErrorMessage));
+                var errorResponse = new ErrorResponse
+                {
+                    StatusCode = 422,
+                    Errors = errors.ToList(),
+                };
+                return UnprocessableEntity(errorResponse);
             }
 
             var user = new User
@@ -64,7 +86,7 @@ public class UsersController : ControllerBase
                 Password = request.Password
             };
 
-            var wallet = new Wallet { Balance = INITIAL_BALANCE };
+            var wallet = new Wallet { Balance = InitialBalance };
             user.Wallet = wallet;
         
             _context.Users.Add(user);
@@ -84,7 +106,10 @@ public class UsersController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new ErrorResponse { Message = e.Message });
+            var error = new Error(e.Message);
+            var errorResponse = new ErrorResponse { StatusCode = 400 };
+            errorResponse.Errors.Add(error);
+            return BadRequest(errorResponse);
         }
     }
 }

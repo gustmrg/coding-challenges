@@ -125,7 +125,9 @@ public class TransactionsController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new ErrorResponse { Message = e.Message });
+            var response = new ErrorResponse { StatusCode = 400 };
+            response.Errors.Add(new Error(e.Message));
+            return BadRequest(response);
         }
     }
 

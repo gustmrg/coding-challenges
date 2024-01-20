@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "m4lQC0LQXW0jKArFeAtgZNwesl4EHzH32MPayO0d3GaIrNfFfS3mBo7LCZYUxIx3dNsB+nVL11in1+sShUEwMg==",
+  "dgSpecHash": "QWM+GbR/SDCyfIjce8FcMi1hfShaTcIh8NHnW6L6+bU6JqwtCrZJX7QtD9NfrBOWzUm2+OGhbnSXkUZvysKcDw==",
   "success": true,
   "projectFilePath": "/Users/gustavo/Dev/Challenges/coding-challenges/picpay/PicPay.API/PicPay.API.csproj",
   "expectedPackageFiles": [
     "/Users/gustavo/.nuget/packages/fluentvalidation/11.9.0/fluentvalidation.11.9.0.nupkg.sha512",
+    "/Users/gustavo/.nuget/packages/fluentvalidation.aspnetcore/11.3.0/fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
+    "/Users/gustavo/.nuget/packages/fluentvalidation.dependencyinjectionextensions/11.5.1/fluentvalidation.dependencyinjectionextensions.11.5.1.nupkg.sha512",
     "/Users/gustavo/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/gustavo/.nuget/packages/microsoft.aspnetcore.openapi/8.0.0/microsoft.aspnetcore.openapi.8.0.0.nupkg.sha512",
     "/Users/gustavo/.nuget/packages/microsoft.bcl.asyncinterfaces/6.0.0/microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",

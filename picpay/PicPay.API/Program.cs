@@ -1,8 +1,11 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
 using PicPay.API.Models.Request;
+using PicPay.API.Models.Response;
 using PicPay.API.Validators;
 using RestSharp;
 
@@ -13,12 +16,24 @@ builder.Services.AddSingleton(new RestClient(new HttpClient()));
 
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite(connectionString));
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-    options.JsonSerializerOptions.WriteIndented = true;
-    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
-});
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => JsonSerializer.Deserialize<Error>(e.ErrorMessage));
+            return new BadRequestObjectResult(errors);
+        };
+    });
+
 builder.Services.AddScoped<IValidator<CreateUserRequestModel>, CreateUserRequestValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
