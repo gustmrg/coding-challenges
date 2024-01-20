@@ -22,14 +22,4 @@ public class UserValidator : AbstractValidator<User>
             .Matches(@"[0-9]+").WithMessage("Your password must contain at least one number.")
             .Matches(@"[\!\?\*\.]+").WithMessage("Your password must contain at least one (!? *.).");
     }
-
-    private static bool ValidCpf(string cpf)
-    {
-        return true;
-    }
-
-    private static bool ValidCnpj(string cnpj)
-    {
-        return true;
-    }
 }

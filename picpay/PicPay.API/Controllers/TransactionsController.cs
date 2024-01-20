@@ -78,6 +78,8 @@ public class TransactionsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> CreateTransaction(CreateTransactionRequestModel request)
     {
+        using var dbTransaction = _context.Database.BeginTransaction();
+        
         try
         {
             var validationResult = _validator.Validate(request);
@@ -98,6 +100,8 @@ public class TransactionsController : ControllerBase
             if (payer == null)  throw new NotFoundException($"User not found with id {request.PayerId}");
 
             if (payer.Wallet.Balance < request.Value) throw new BalanceException("Balance is not enough to complete the transaction");
+
+            if (payer.IsSeller) throw new TransactionException("Sellers cannot send money to other users");
             
             var payee = await _context.Users.Include(u => u.Wallet)
                 .FirstOrDefaultAsync(u => u.Id == request.PayeeId);
@@ -151,6 +155,8 @@ public class TransactionsController : ControllerBase
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
             await SendTransactionNotification();
+            
+            await dbTransaction.CommitAsync();
 
             var response = new CreateTransactionResponseModel
             {
@@ -175,6 +181,7 @@ public class TransactionsController : ControllerBase
         }
         catch (Exception e)
         {
+            dbTransaction.Rollback();
             var response = new ErrorResponse { StatusCode = 400 };
             response.Errors.Add(new Error(e.Message));
             return BadRequest(response);

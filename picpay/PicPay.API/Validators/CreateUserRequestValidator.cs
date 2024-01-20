@@ -1,5 +1,7 @@
+using System.Data;
 using FluentValidation;
 using PicPay.API.Models.Request;
+using static PicPay.API.Helpers.StringHelper;
 
 namespace PicPay.API.Validators;
 
@@ -23,5 +25,15 @@ public class CreateUserRequestValidator : AbstractValidator<CreateUserRequestMod
             .Matches(@"[a-z]+").WithMessage("Your password must contain at least one lowercase letter.")
             .Matches(@"[0-9]+").WithMessage("Your password must contain at least one number.")
             .Matches(@"[\!\?\*\.]+").WithMessage("Your password must contain at least one (!? *.).");
+
+        RuleFor(x => x.DocumentNumber).NotEmpty()
+            .Must(IsValidDocumentNumber).WithMessage("Document number must be in a valid CPF or CNPJ format");
+    }
+
+    private static bool IsValidDocumentNumber(string documentNumber)
+    {
+        documentNumber = RemoveSpecialCharactersAndLetters(documentNumber);
+        
+        return documentNumber.Length is 11 or 14;
     }
 }

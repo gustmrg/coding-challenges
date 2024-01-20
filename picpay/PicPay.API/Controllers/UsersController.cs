@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PicPay.API.Data;
 using PicPay.API.Entities;
+using PicPay.API.Helpers;
 using PicPay.API.Models;
 using PicPay.API.Models.Request;
 using PicPay.API.Models.Response;
@@ -83,7 +84,8 @@ public class UsersController : ControllerBase
                 FullName = request.FullName,
                 DocumentNumber = request.DocumentNumber,
                 Email = request.Email,
-                Password = request.Password
+                Password = request.Password,
+                IsSeller = StringHelper.RemoveSpecialCharactersAndLetters(request.DocumentNumber).Length == 14
             };
 
             var wallet = new Wallet { Balance = InitialBalance };
