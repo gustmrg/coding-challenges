@@ -12,4 +12,5 @@ Cada desafio está separado em um diretório com:
 ### Desafios
 | Desafio | Diretório | Link |
 | --- | --- | --- |
-| Back-end PicPay | [PicPay](picpay) | [GitHub](https://github.com/PicPay/picpay-desafio-backend)
+| Desenvolvedor Back-end | [PicPay](picpay) | [GitHub](https://github.com/PicPay/picpay-desafio-backend)
+| Desenvolvedor C# | [Kinvo](kinvo) | [GitHub](https://github.com/kinvoapp/kinvo-back-end-test)
