@@ -6,8 +6,9 @@ O objetivo deste repositório é praticar a construção de aplicações que bus
 
 ### Estrutura dos desafios
 Cada desafio está separado em um diretório com:
-* `README.md` - instruções do desafio e uma descrição da solução desenvolvida
 * `src` - pasta que contém o código fonte da solução
+* `README.md` - instruções do desafio
+* `SOLUTION.md` - descrição da solução desenvolvida
 
 ### Desafios
 | Desafio | Diretório | Link | Solução |
