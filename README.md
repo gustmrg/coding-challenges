@@ -10,7 +10,8 @@ Cada desafio está separado em um diretório com:
 * `src` - pasta que contém o código fonte da solução
 
 ### Desafios
-| Desafio | Diretório | Link |
-| --- | --- | --- |
-| Desenvolvedor Back-end | [PicPay](picpay) | [GitHub](https://github.com/PicPay/picpay-desafio-backend)
-| Desenvolvedor C# | [Kinvo](kinvo) | [GitHub](https://github.com/kinvoapp/kinvo-back-end-test)
+| Desafio | Diretório | Link | Solução |
+| --- | --- | --- | --- | 
+| Desenvolvedor Back-end | [PicPay](picpay) | [GitHub](https://github.com/PicPay/picpay-desafio-backend) | [Solução](https://github.com/gustmrg/coding-challenges/blob/main/picpay/SOLUTION.md)
+| Desenvolvedor C# | [Kinvo](kinvo) | [GitHub](https://github.com/kinvoapp/kinvo-back-end-test) | | 
+| Desenvolvedor Back-End .NET | [FCamara](fcamara) | [GitHub](https://github.com/fcamarasantos/backend-test-dotnet) | | 
